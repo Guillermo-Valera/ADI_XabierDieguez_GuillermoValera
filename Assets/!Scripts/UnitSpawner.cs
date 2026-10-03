@@ -50,7 +50,6 @@ public class UnitSpawner : MonoBehaviour
             go.direction = 1;
         }
         
-        
         if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Alpha5))
         {
             go = Instantiate(units[typeOfUnit], rSpawn.position, rSpawn.rotation).GetComponent<Unit>();
