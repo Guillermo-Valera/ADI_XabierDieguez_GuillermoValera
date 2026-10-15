@@ -14,8 +14,16 @@ public class UnitSpawner : MonoBehaviour
 
     private Unit go;
     private int typeOfUnit;
+    
+    private float timeRemaining;
+    public float moneyGainRate;
+    public int moneyGained;
+    public int maxMoney;
+    
     void Update()
     {
+        GainMoneyProcess();
+        
         if ((Input.GetKeyDown(KeyCode.Q) && lMoney > units[0].GetComponent<Unit>().price) || (Input.GetKeyDown(KeyCode.Alpha1) && rMoney > units[0].GetComponent<Unit>().price))
         {
             typeOfUnit = 0;
@@ -57,6 +65,30 @@ public class UnitSpawner : MonoBehaviour
             go.ChangeLayer(7, 6);
             go.direction = -1;
             go.gameObject.transform.localScale = new Vector3(-1, 1, 1);
+        }
+    }
+    
+    private void GainMoneyProcess()
+    {
+        if (timeRemaining > 0)
+        {
+            timeRemaining -= Time.deltaTime;
+        }
+        else
+        {
+            rMoney += moneyGained;
+            lMoney += moneyGained;
+
+            if (lMoney > maxMoney)
+            {
+                lMoney = maxMoney;
+            }
+            
+            if (rMoney > maxMoney)
+            {
+                rMoney = maxMoney;
+            }
+            timeRemaining = 1f / moneyGainRate;
         }
     }
 }
