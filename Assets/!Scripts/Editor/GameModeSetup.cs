@@ -4,18 +4,12 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-/// <summary>
-/// Bases con vida, fondo y balance de oro.
-/// Se ejecuta desde Tools > Configurar personajes, proyectiles y UI
-/// (o por separado desde Tools > Configurar bases, fondo y oro).
-/// </summary>
 public static class GameModeSetup
 {
     const string ScenePath = "Assets/Scenes/SampleScene.unity";
     const string UnitsAnimFolder = "Assets/Art/Duelyst-Sprites/Animations/Units/";
     const string BackgroundPath = "Assets/Art/Background/Battlefield.png";
 
-    // --- Bases ---
     const float BaseHealth = 300f;
     const float BaseVisualHeight = 7f;
     const float BaseX = 12f;
@@ -27,7 +21,6 @@ public static class GameModeSetup
         ("Assets/Prefab/Bases/RightBase.prefab", "f3_lavastormobelysk", -1),
     };
 
-    // --- Oro ---
     static readonly (string prefab, int price)[] Prices =
     {
         ("Assets/Prefab/Melee/Brawler.prefab",        25),
@@ -60,16 +53,14 @@ public static class GameModeSetup
         SetupBackground();
         SetupSpawnerMoney();
 
+        BalanceSync.Sync(saveScene: false);
+
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
-        Debug.Log("[GameModeSetup] Bases, fondo y oro configurados.");
     }
-
-    // ---------------- Sonido ----------------
 
     const string SfxFolder = "Assets/Audio/SFX/";
 
-    // prefab -> ataque, golpe, recibir daño, muerte
     static readonly (string prefab, string attack, string impact, string hit, string death)[] UnitSounds =
     {
         ("Assets/Prefab/Melee/Brawler.prefab",        "sfx_f2tank_attack_swing", "sfx_f2tank_attack_impact", "sfx_f2tank_hit_3", "sfx_f2tank_death"),
@@ -81,7 +72,6 @@ public static class GameModeSetup
         ("Assets/Prefab/Bases/RightBase.prefab",      null, null, "sfx_neutral_spiritscribe_hit", "sfx_neutral_golembloodshard_death"),
     };
 
-    // proyectil -> sonido al impactar
     static readonly (string prefab, string impact)[] ProjectileSounds =
     {
         ("Assets/Prefab/Projectiles/Arrow.prefab", "sfx_neutral_swornavenger_attack_impact"),
@@ -120,8 +110,6 @@ public static class GameModeSetup
         AssetDatabase.SaveAssets();
     }
 
-    // ---------------- Oro ----------------
-
     static void SetPrices()
     {
         foreach (var (path, price) in Prices)
@@ -150,8 +138,6 @@ public static class GameModeSetup
         so.ApplyModifiedPropertiesWithoutUndo();
     }
 
-    // ---------------- Bases ----------------
-
     static GameObject CreateBasePrefab(string prefabPath, string duelystUnit, int direction)
     {
         var controller = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
@@ -175,20 +161,18 @@ public static class GameModeSetup
 
         try
         {
-            // Visual animado
             var visual = GameSetupTool.GetOrCreateChild(root.transform, "Visual");
             var sr = GameSetupTool.GetOrAdd<SpriteRenderer>(visual.gameObject);
             sr.sprite = sprite;
             sr.color = Color.white;
             sr.sortingOrder = 5;
-            // Sin iluminación 2D (igual que las tropas), si no se ve negro
+
             var unlitMat = GameSetupTool.GetUnlitMaterial();
             if (unlitMat != null) sr.sharedMaterial = unlitMat;
             var anim = GameSetupTool.GetOrAdd<Animator>(visual.gameObject);
             anim.runtimeAnimatorController = controller;
             GameSetupTool.FitHeight(visual, sprite, BaseVisualHeight);
 
-            // Físicas: un collider sólido para que las tropas lo detecten
             var col = GameSetupTool.GetOrAdd<CircleCollider2D>(root);
             col.isTrigger = false;
             col.radius = 1.2f;
@@ -196,7 +180,6 @@ public static class GameModeSetup
             rb.bodyType = RigidbodyType2D.Kinematic;
             rb.gravityScale = 0;
 
-            // Vida (reutiliza Unit con isBase = true)
             var unit = GameSetupTool.GetOrAdd<Unit>(root);
             var so = new SerializedObject(unit);
             so.FindProperty("price").intValue = 0;
@@ -209,7 +192,6 @@ public static class GameModeSetup
             so.FindProperty("animator").objectReferenceValue = anim;
             so.ApplyModifiedPropertiesWithoutUndo();
 
-            // Barra de vida grande encima
             var barT = GameSetupTool.GetOrCreateChild(root.transform, "HealthBar");
             foreach (Transform child in barT.Cast<Transform>().ToList())
                 Object.DestroyImmediate(child.gameObject);
@@ -233,7 +215,6 @@ public static class GameModeSetup
 
     static void PlaceBases(GameObject[] prefabs)
     {
-        // Quita bases antiguas
         foreach (var u in Object.FindObjectsByType<Unit>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             if (u.IsBase) Object.DestroyImmediate(u.gameObject);
 
@@ -243,12 +224,10 @@ public static class GameModeSetup
             int dir = Bases[i].direction;
             var go = (GameObject)PrefabUtility.InstantiatePrefab(prefabs[i]);
             go.transform.position = new Vector3(-BaseX * dir, BaseY, 0);
-            // La de la derecha mira hacia la izquierda
+
             go.transform.localScale = new Vector3(dir, 1, 1);
         }
     }
-
-    // ---------------- Fondo ----------------
 
     static void SetupBackground()
     {
@@ -278,7 +257,6 @@ public static class GameModeSetup
         var unlit = GameSetupTool.GetUnlitMaterial();
         if (unlit != null) sr.sharedMaterial = unlit;
 
-        // Escala para cubrir toda la cámara (16:9 con un poco de margen)
         var cam = Camera.main;
         float camH = cam != null ? cam.orthographicSize * 2f : 16f;
         float camW = camH * 16f / 9f;

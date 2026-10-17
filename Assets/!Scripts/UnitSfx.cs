@@ -1,10 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Sonidos de una unidad o base. Unit los dispara al atacar, golpear, recibir daño y morir.
-/// Los asigna el menú Tools > Configurar bases, fondo y oro.
-/// </summary>
 public class UnitSfx : MonoBehaviour
 {
     public AudioClip attack;
@@ -19,10 +15,6 @@ public class UnitSfx : MonoBehaviour
     public void PlayDeath() => SfxPlayer.Play(death, volume);
 }
 
-/// <summary>
-/// Un único AudioSource 2D para todos los efectos. Evita que el mismo sonido
-/// se repita muchas veces en el mismo instante cuando hay muchas tropas.
-/// </summary>
 public static class SfxPlayer
 {
     const float MinRepeatTime = 0.06f;

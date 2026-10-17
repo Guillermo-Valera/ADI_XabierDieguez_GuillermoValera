@@ -6,21 +6,14 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Configura de una vez los personajes, proyectiles y el HUD.
-/// Menú: Tools > Configurar personajes, proyectiles y UI
-/// Se puede ejecutar varias veces: reutiliza lo que ya exista.
-/// </summary>
 public static class GameSetupTool
 {
     const string UnitsAnimFolder = "Assets/Art/Duelyst-Sprites/Animations/Units/";
     const string ProjectileControllersFolder = "Assets/Art/Projectiles";
 
-    // Altura (en unidades de mundo) que ocupará el frame completo del sprite.
     const float UnitVisualHeight = 5f;
     const float ProjectileVisualHeight = 3.5f;
 
-    // Prefab -> personaje de Duelyst
     static readonly (string prefab, string duelystUnit)[] UnitMap =
     {
         ("Assets/Prefab/Melee/Brawler.prefab",         "f2_tank"),
@@ -30,7 +23,6 @@ public static class GameSetupTool
         ("Assets/Prefab/Ranged_Unique/Archer.prefab",  "f1_backlinearcher"),
     };
 
-    // Proyectil -> clip de proyectil de Duelyst
     static readonly (string prefab, string duelystUnit)[] ProjectileMap =
     {
         ("Assets/Prefab/Projectiles/Arrow.prefab", "f1_backlinearcher"),
@@ -51,11 +43,7 @@ public static class GameSetupTool
 
         SetupHud();
         GameModeSetup.SetupBasesBackgroundAndGold();
-
-        Debug.Log($"[GameSetupTool] Listo: {ok}/{UnitMap.Length + ProjectileMap.Length} prefabs configurados y HUD creado.");
     }
-
-    // ---------------- Personajes ----------------
 
     static bool SetupUnitPrefab(string prefabPath, string duelystUnit)
     {
@@ -74,7 +62,6 @@ public static class GameSetupTool
         var root = PrefabUtility.LoadPrefabContents(prefabPath);
         try
         {
-            // El sprite pasa a un hijo "Visual" para poder escalarlo sin tocar los colliders
             var oldRenderer = root.GetComponent<SpriteRenderer>();
             if (oldRenderer != null) Object.DestroyImmediate(oldRenderer);
             var oldAnimator = root.GetComponent<Animator>();
@@ -92,7 +79,6 @@ public static class GameSetupTool
 
             FitHeight(visual, firstSprite, UnitVisualHeight);
 
-            // Barra de vida con sprite y material sin iluminación
             var barT = GetOrCreateChild(root.transform, "HealthBar");
             foreach (Transform child in barT.Cast<Transform>().ToList())
                 Object.DestroyImmediate(child.gameObject);
@@ -102,7 +88,6 @@ public static class GameSetupTool
             barSo.FindProperty("barMaterial").objectReferenceValue = GetUnlitMaterial();
             barSo.ApplyModifiedPropertiesWithoutUndo();
 
-            // Referencia del Animator en Unit
             var unit = root.GetComponent<Unit>();
             if (unit != null)
             {
@@ -116,7 +101,6 @@ public static class GameSetupTool
             }
 
             PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
-            Debug.Log($"[GameSetupTool] {prefabPath} -> {duelystUnit}");
             return true;
         }
         finally
@@ -124,8 +108,6 @@ public static class GameSetupTool
             PrefabUtility.UnloadPrefabContents(root);
         }
     }
-
-    // ---------------- Proyectiles ----------------
 
     static bool SetupProjectilePrefab(string prefabPath, string duelystUnit)
     {
@@ -166,7 +148,6 @@ public static class GameSetupTool
             FitHeight(visual, firstSprite, ProjectileVisualHeight);
 
             PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
-            Debug.Log($"[GameSetupTool] {prefabPath} -> {duelystUnit}_projectile");
             return true;
         }
         finally
@@ -174,8 +155,6 @@ public static class GameSetupTool
             PrefabUtility.UnloadPrefabContents(root);
         }
     }
-
-    // ---------------- HUD ----------------
 
     static void SetupHud()
     {
@@ -214,6 +193,8 @@ public static class GameSetupTool
         result.text = "YOU WON";
         result.GetComponent<Outline>().effectDistance = new Vector2(5, -5);
 
+        result.transform.parent.gameObject.SetActive(false);
+
         var ui = hud.AddComponent<GameUI>();
         var so = new SerializedObject(ui);
         so.FindProperty("spawner").objectReferenceValue = Object.FindFirstObjectByType<UnitSpawner>();
@@ -230,7 +211,6 @@ public static class GameSetupTool
     static Text CreateText(Transform parent, string name, Font font, TextAnchor anchor,
                            Vector2 pivotAndAnchor, Vector2 position, Color color)
     {
-        // Panel oscuro detrás para que el texto se lea sobre el fondo
         var panel = new GameObject(name + "Panel", typeof(RectTransform), typeof(Image));
         panel.transform.SetParent(parent, false);
         var prt = panel.GetComponent<RectTransform>();
@@ -263,8 +243,6 @@ public static class GameSetupTool
         outline.effectDistance = new Vector2(2, -2);
         return text;
     }
-
-    // ---------------- Barra de vida ----------------
 
     const string BarSpritePath = "Assets/Art/UI/HealthBarPixel.png";
 
@@ -302,7 +280,6 @@ public static class GameSetupTool
 
     internal static Material GetUnlitMaterial()
     {
-        // Material sin luz del 2D Renderer de URP
         var mat = AssetDatabase.LoadAssetAtPath<Material>(
             "Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Unlit-Default.mat");
         if (mat != null) return mat;
@@ -310,8 +287,6 @@ public static class GameSetupTool
         var guid = AssetDatabase.FindAssets("Sprite-Unlit-Default t:Material").FirstOrDefault();
         return guid != null ? AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(guid)) : null;
     }
-
-    // ---------------- Utilidades ----------------
 
     internal static Sprite FirstSprite(AnimationClip clip)
     {

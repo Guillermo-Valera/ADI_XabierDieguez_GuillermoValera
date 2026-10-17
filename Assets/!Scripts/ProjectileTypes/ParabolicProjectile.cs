@@ -2,10 +2,10 @@ using UnityEngine;
 
 public abstract class ParabolicProjectile : MonoBehaviour
 {
-    [SerializeField] protected float speed = 8f;        // unidades/segundo en horizontal
-    [SerializeField] protected float arcHeight = 2f;    // altura máxima extra del arco
+    [SerializeField] protected float speed = 8f;
+    [SerializeField] protected float arcHeight = 2f;
     [SerializeField] private bool rotateAlongPath = true;
-    [SerializeField] private AudioClip impactSfx;       // sonido al llegar
+    [SerializeField] private AudioClip impactSfx;
     [SerializeField, Range(0f, 1f)] private float impactVolume = 0.7f;
 
     protected Vector2 startPos;
@@ -30,7 +30,6 @@ public abstract class ParabolicProjectile : MonoBehaviour
         launched = true;
     }
 
-    // Las hijas pueden actualizar endPos aquí (objetivo móvil)
     protected virtual void UpdateTarget() { }
 
     protected abstract void OnArrive();

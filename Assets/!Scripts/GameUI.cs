@@ -3,10 +3,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/// <summary>
-/// HUD de la partida: oro, vida de las bases, tiempo y el cartel de victoria/derrota.
-/// Lo crea el menú Tools > Configurar personajes, proyectiles y UI.
-/// </summary>
 public class GameUI : MonoBehaviour
 {
     [SerializeField] private UnitSpawner spawner;
@@ -15,10 +11,8 @@ public class GameUI : MonoBehaviour
     [SerializeField] private Text timerText;
     [SerializeField] private Text resultText;
 
-    [Tooltip("Duración de la partida en segundos. 0 = el reloj cuenta hacia arriba.")]
     [SerializeField] private float matchDuration = 0f;
 
-    [Tooltip("Segundos que se ve el cartel antes de reiniciar la escena.")]
     [SerializeField] private float restartDelay = 4f;
 
     public static bool IsGameOver { get; private set; }
@@ -36,7 +30,6 @@ public class GameUI : MonoBehaviour
         if (resultText != null) ResultRoot.SetActive(false);
     }
 
-    // El cartel puede estar dentro de un panel oscuro; se activa/desactiva el conjunto
     private GameObject ResultRoot =>
         resultText.transform.parent != null && resultText.transform.parent.GetComponent<Image>() != null
             ? resultText.transform.parent.gameObject
@@ -82,7 +75,6 @@ public class GameUI : MonoBehaviour
         return $"{Mathf.CeilToInt(b.Health)} / {Mathf.CeilToInt(b.MaxHealth)}";
     }
 
-    /// <summary>Lo llama la base al ser destruida.</summary>
     public static void EndGame(bool leftWon)
     {
         if (IsGameOver) return;
@@ -100,7 +92,6 @@ public class GameUI : MonoBehaviour
             resultText.color = leftWon ? new Color(0.45f, 0.85f, 1f) : new Color(1f, 0.35f, 0.3f);
         }
 
-        // Congela el combate mientras se ve el cartel
         Time.timeScale = 0f;
         yield return new WaitForSecondsRealtime(restartDelay);
 

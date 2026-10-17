@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class UnitSpawner : MonoBehaviour
 {
-
     public GameObject[] units;
 
     [SerializeField] private Transform lSpawn;
@@ -35,7 +34,6 @@ public class UnitSpawner : MonoBehaviour
         }
     }
 
-    // Solo saca la unidad si el jugador tiene oro suficiente
     private void TrySpawn(int typeOfUnit, bool left)
     {
         int price = units[typeOfUnit].GetComponent<Unit>().price;

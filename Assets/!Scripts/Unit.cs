@@ -18,26 +18,18 @@ public class Unit : MonoBehaviour
     private bool hasDetectedEnemy;
     [SerializeField] float timeRemaining;
 
-    // --- Animación ---
-    [Header("Animación")]
-    [Tooltip("Animator del hijo 'Visual'. Si se deja vacío se busca automáticamente.")]
     [SerializeField] private Animator animator;
     private string currentAnim;
     private float attackAnimTimer;
     private float attackClipLength = 0.5f;
     private float deathClipLength = 0.6f;
 
-    // --- Vida ---
     private float maxHealth;
     private bool isDead;
     private UnitHealthBar healthBar;
 
-    // --- Sonido ---
     private UnitSfx sfx;
 
-    // --- Base ---
-    [Header("Base")]
-    [Tooltip("Marcado en las bases: no se mueven ni atacan, y si mueren se acaba la partida.")]
     [SerializeField] private bool isBase;
 
     public bool IsDead => isDead;
@@ -67,7 +59,6 @@ public class Unit : MonoBehaviour
         timeRemaining = attackRate > 0 ? 1f / attackRate : 1f;
         maxHealth = health;
 
-        // La base de la izquierda es del jugador 1 (capa 6), la de la derecha del jugador 2 (capa 7)
         if (isBase)
         {
             if (direction >= 0) ChangeLayer(6, 7);
@@ -120,7 +111,7 @@ public class Unit : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (isDead || isBase) return;
-        if (other.isTrigger) return; // ignora el rango de detección del otro
+        if (other.isTrigger) return;
         if (((1 << other.gameObject.layer) & enemyLayer) == 0) return;
         if (targets.Contains(other.gameObject)) return;
 
@@ -173,7 +164,6 @@ public class Unit : MonoBehaviour
 
     public virtual void Attack(Unit target)
     {
-
     }
 
     public void Damage(float damage)
@@ -193,7 +183,6 @@ public class Unit : MonoBehaviour
         isDead = true;
         if (sfx != null) sfx.PlayDeath();
 
-        // Deja de colisionar para que los enemigos dejen de apuntarle
         foreach (var col in GetComponents<Collider2D>())
             col.enabled = false;
 
@@ -201,7 +190,6 @@ public class Unit : MonoBehaviour
 
         if (isBase)
         {
-            // La base se queda en escena; gana el jugador contrario
             PlayAnim("death", true);
             GameUI.EndGame(leftWon: direction < 0);
             return;
@@ -220,13 +208,10 @@ public class Unit : MonoBehaviour
 
     public void VerifyTargets()
     {
-        // Quita objetivos destruidos o muertos
         targets.RemoveAll(target => target == null ||
                                     (target.TryGetComponent(out Unit u) && u.IsDead));
     }
 
-    // --- Helpers de animación ---
-    // Golpe que llega al objetivo (lo usan los ataques cuerpo a cuerpo)
     protected void PlayImpactSfx()
     {
         if (sfx != null) sfx.PlayImpact();

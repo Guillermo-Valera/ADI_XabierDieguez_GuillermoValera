@@ -1,11 +1,9 @@
 using UnityEngine;
 
-
 public class UnitHealthBar : MonoBehaviour
 {
-    [Tooltip("Sprite blanco con el pivote a la izquierda")]
     [SerializeField] private Sprite barSprite;
-    [Tooltip("Material sin iluminación para que los colores se vean tal cual")]
+
     [SerializeField] private Material barMaterial;
 
     [SerializeField] private float width = 1.2f;
@@ -27,7 +25,6 @@ public class UnitHealthBar : MonoBehaviour
     {
         if (fill != null) return;
 
-        
         if (barSprite == null)
         {
             var tex = new Texture2D(4, 4, TextureFormat.RGBA32, false);
@@ -75,7 +72,6 @@ public class UnitHealthBar : MonoBehaviour
 
     private void LateUpdate()
     {
-       
         if (transform.parent == null) return;
         float sign = Mathf.Sign(transform.parent.lossyScale.x);
         transform.localScale = new Vector3(sign, 1, 1);

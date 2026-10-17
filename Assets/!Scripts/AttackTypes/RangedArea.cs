@@ -12,7 +12,7 @@ public class RangedArea : Unit
 
         LayerMask mask = enemyLayer;
         if (friendlyFire)
-            mask |= 1 << gameObject.layer;   // añade también tu propio bando
+            mask |= 1 << gameObject.layer;
 
         bomb.Launch(target.transform.position, damage, mask);
     }
