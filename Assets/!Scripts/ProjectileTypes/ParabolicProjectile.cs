@@ -5,6 +5,8 @@ public abstract class ParabolicProjectile : MonoBehaviour
     [SerializeField] protected float speed = 8f;        // unidades/segundo en horizontal
     [SerializeField] protected float arcHeight = 2f;    // altura máxima extra del arco
     [SerializeField] private bool rotateAlongPath = true;
+    [SerializeField] private AudioClip impactSfx;       // sonido al llegar
+    [SerializeField, Range(0f, 1f)] private float impactVolume = 0.7f;
 
     protected Vector2 startPos;
     protected Vector2 endPos;
@@ -60,6 +62,7 @@ public abstract class ParabolicProjectile : MonoBehaviour
         if (t >= 1f)
         {
             launched = false;
+            SfxPlayer.Play(impactSfx, impactVolume);
             OnArrive();
         }
     }
