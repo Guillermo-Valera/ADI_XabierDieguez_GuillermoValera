@@ -11,6 +11,8 @@ public class Unit : MonoBehaviour
     [SerializeField] private bool killSelfAfterAttack;
     [SerializeField] private List<GameObject> targets;
     [SerializeField] private float speed;
+    [SerializeField] private float range;
+    [SerializeField] private CircleCollider2D attackTrigger;
 
     public LayerMask enemyLayer;
     public int direction;
@@ -58,7 +60,9 @@ public class Unit : MonoBehaviour
     {
         timeRemaining = attackRate > 0 ? 1f / attackRate : 1f;
         maxHealth = health;
-
+        
+        attackTrigger.radius = range;
+        
         if (isBase)
         {
             if (direction >= 0) ChangeLayer(6, 7);

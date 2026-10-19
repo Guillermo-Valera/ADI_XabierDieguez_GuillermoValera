@@ -37,6 +37,7 @@ public static class BalanceSync
         ("dano",                "damage",     false),
         ("ataques por segundo", "attackRate", false),
         ("velocidad",           "speed",      false),
+        ("rango",           "range",      false),
     };
 
     static BalanceSync()
