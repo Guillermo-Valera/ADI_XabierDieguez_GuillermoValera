@@ -11,6 +11,8 @@ public class Unit : MonoBehaviour
     [SerializeField] private bool killSelfAfterAttack;
     [SerializeField] private List<GameObject> targets;
     [SerializeField] private float speed;
+    [SerializeField] private float range;
+    [SerializeField] private CircleCollider2D attackTrigger;
 
     public LayerMask enemyLayer;
     public int direction;
@@ -55,6 +57,7 @@ public class Unit : MonoBehaviour
     {
         get
         {
+            if (range > 0) return range;
             foreach (var col in GetComponents<CircleCollider2D>())
                 if (col.isTrigger) return col.offset.x + col.radius;
             return 0f;
@@ -82,6 +85,11 @@ public class Unit : MonoBehaviour
         timeRemaining = attackRate > 0 ? 1f / attackRate : 1f;
         maxHealth = health;
 
+        if (attackTrigger != null && range > 0)
+        {
+            attackTrigger.offset = new Vector2(range / 2f, attackTrigger.offset.y);
+            attackTrigger.radius = range / 2f;
+        }
         if (isBase)
         {
             if (direction >= 0) ChangeLayer(6, 7);

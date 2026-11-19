@@ -38,6 +38,7 @@ public static class BalanceSync
         ("poder de ataque",     "damage",     false),
         ("ataques por segundo", "attackRate", false),
         ("velocidad",           "speed",      false),
+        ("rango",           "range",      false),
     };
 
     static BalanceSync()
@@ -180,8 +181,6 @@ public static class BalanceSync
                 foreach (var (header, field, isInt) in TroopColumns)
                     if (colIndex.TryGetValue(header, out int c) && TryNumber(row, c, out float v))
                         SetUnitField(prefabPath, field, v, isInt, row[0], changes);
-                if (colIndex.TryGetValue("rango", out int rc) && TryNumber(row, rc, out float range))
-                    SetUnitRange(prefabPath, range, row[0], changes);
             }
             else if (key == "base")
             {
@@ -224,25 +223,6 @@ public static class BalanceSync
         }
         so.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(prefab);
-    }
-
-    static void SetUnitRange(string prefabPath, float range, string label, List<string> changes)
-    {
-        if (range <= 0) return;
-        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
-        if (prefab == null) return;
-
-        foreach (var col in prefab.GetComponents<CircleCollider2D>())
-        {
-            if (!col.isTrigger) continue;
-            float current = col.offset.x + col.radius;
-            if (Mathf.Approximately(current, range)) return;
-            changes.Add($"{label} rango: {current} -> {range}");
-            col.offset = new Vector2(range / 2f, col.offset.y);
-            col.radius = range / 2f;
-            EditorUtility.SetDirty(prefab);
-            return;
-        }
     }
 
     static void ApplyEconomy(float? startMoney, float? moneyPerSecond, float? maxMoney, bool saveScene, List<string> changes)
