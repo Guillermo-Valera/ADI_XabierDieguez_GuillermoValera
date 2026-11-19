@@ -38,6 +38,29 @@ public class Unit : MonoBehaviour
     public float MaxHealth => maxHealth;
     public float HealthPercent => maxHealth > 0 ? Mathf.Clamp01(health / maxHealth) : 0f;
 
+    public float BaseHealth => health;
+    public float AttackRate => attackRate;
+    public float Speed => speed;
+    public string StatKey
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(statKey)) statKey = name.Replace("(Clone)", "").Trim();
+            return statKey;
+        }
+    }
+    [System.NonSerialized] private string statKey;
+
+    public float Range
+    {
+        get
+        {
+            foreach (var col in GetComponents<CircleCollider2D>())
+                if (col.isTrigger) return col.offset.x + col.radius;
+            return 0f;
+        }
+    }
+
     private void Awake()
     {
         if (animator == null)
@@ -90,6 +113,7 @@ public class Unit : MonoBehaviour
         }
         else
         {
+            PlaytestStats.AddCombatTime(StatKey, Time.deltaTime);
             if (attackAnimTimer <= 0)
                 PlayAnim("idle");
             AttackProcess();
@@ -166,11 +190,13 @@ public class Unit : MonoBehaviour
     {
     }
 
-    public void Damage(float damage)
+    public void Damage(float damage, string sourceKey = null)
     {
         if (isDead) return;
 
         health -= damage;
+        DamagePopups.Show(transform.position, damage, isBase);
+        if (sourceKey != null) PlaytestStats.AddDamage(sourceKey, damage);
         if (healthBar != null) healthBar.SetValue(HealthPercent);
         if (isBase && health > 0 && sfx != null) sfx.PlayHit();
 

@@ -3,10 +3,12 @@ using UnityEngine;
 public class Arrow : ParabolicProjectile
 {
     private GameObject target;
+    private string sourceKey;
 
-    public void Launch(GameObject target, float damage)
+    public void Launch(GameObject target, float damage, string sourceKey = null)
     {
         this.target = target;
+        this.sourceKey = sourceKey;
         BeginFlight(target.transform.position, damage);
     }
 
@@ -19,7 +21,7 @@ public class Arrow : ParabolicProjectile
     protected override void OnArrive()
     {
         if (target != null && target.TryGetComponent(out Unit unit))
-            unit.Damage(damage);
+            unit.Damage(damage, sourceKey);
 
         Destroy(gameObject);
     }

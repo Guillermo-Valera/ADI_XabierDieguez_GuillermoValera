@@ -7,10 +7,12 @@ public class Bomb : ParabolicProjectile
     [SerializeField] private GameObject explosionVfx;
 
     private LayerMask affectedLayers;
+    private string sourceKey;
 
-    public void Launch(Vector2 targetPosition, float damage, LayerMask affectedLayers)
+    public void Launch(Vector2 targetPosition, float damage, LayerMask affectedLayers, string sourceKey = null)
     {
         this.affectedLayers = affectedLayers;
+        this.sourceKey = sourceKey;
         BeginFlight(targetPosition, damage);
     }
 
@@ -23,7 +25,7 @@ public class Bomb : ParabolicProjectile
         {
             if (col.isTrigger) continue;
             if (col.TryGetComponent(out Unit unit) && damaged.Add(unit))
-                unit.Damage(damage);
+                unit.Damage(damage, sourceKey);
         }
 
         if (explosionVfx != null)

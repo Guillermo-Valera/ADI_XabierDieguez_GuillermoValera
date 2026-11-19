@@ -14,6 +14,6 @@ public class RangedArea : Unit
         if (friendlyFire)
             mask |= 1 << gameObject.layer;
 
-        bomb.Launch(target.transform.position, damage, mask);
+        bomb.Launch(target.transform.position, damage, mask, StatKey);
     }
 }

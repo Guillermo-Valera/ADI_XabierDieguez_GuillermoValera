@@ -1,21 +1,24 @@
-Balance de tropas,,,,,,,,,,,
-ADI · Xabier Dieguez & Guillermo Valera,,,,,,,,,,,
-,,,,,,,,,,,
-,,STATS · se pasan a Unity,,,,,ANÁLISIS,,,,
-Tropa,Tecla J1 / J2,Coste,Vida,Daño,Ataques por segundo,Velocidad,Daño por segundo,Segundos para pagarla,Vida por 100 de oro,Daño/seg por 100 de oro,Habilidad
-Brawler,Q / 1,25,15,5,2,4,10,5,60,40,Cuerpo a cuerpo
-Rogue,W / 2,40,10,3,4,6,12,8,25,30,"Cuerpo a cuerpo, el más rápido"
-Archer,T / 5,50,10,5,3,"1,5",15,10,20,30,Dispara flechas a distancia
-Tank,E / 3,75,15,10,"0,75",2,"7,5",15,20,10,Pega a todos los que tiene delante
-Bomber,R / 4,90,5,10,"0,5",1,5,18,"5,6","5,6",Lanza una bomba en área y muere
-Base,—,,300,,,,,,,,Vida de cada base
-,,,,,,,,,,,
-Economía,Valor,,,,,,,,,,
-Oro inicial,50,,,,,,,,,,
-Oro por segundo,5,,,,,,,,,,
-Oro máximo,200,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-MODIFICA UNITY,,,,,,,,,,,
-COMPARAR TROPAS,,,,,,,,,,,
-NO TOCAR FILA A NI COLUMNA 5,,,,,,,,,,,
+Balance de tropas,,,,,,,,,,,,,,
+ADI · Xabier Dieguez & Guillermo Valera,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,STATS · se pasan a Unity,,,,,,ANÁLISIS,,,,,EN JUEGO · se pasa a Unity,
+Tropa,Tecla J1 / J2,Coste,Vida,Daño,Ataques por segundo,Velocidad,Rango,Daño por segundo,Vida efectiva,Vida por 100 de oro,Daño/seg por 100 de oro,VALOR DE TROPA (1-5),Poder de ataque,DPS en juego
+Brawler,Q / 1,25,15,5,2,4,1,10,"1,5",60,40,1,5,10
+Rogue,W / 2,25,9,"8,75",3,5,"0,6","26,25","0,9",36,105,1,"8,75","26,25"
+Archer,T / 5,100,12,"8,75","1,5","4,6",3,"13,125","1,2",12,"13,1",4,"8,75","13,13"
+Tank,E / 3,50,"37,5",10,"0,8",2,"0,8",8,"3,75",75,16,2,10,8
+Bomber,R / 4,125,"7,5",50,"0,5","2,24",3,25,"0,75",6,20,5,50,25
+Base,,,300,,,,,,,,,,Vida de cada base,
+,,,,,,,,,,,,,,
+Economía,Valor,,,,,,,,,,,,,
+Oro inicial,50,,,,,,,,,,,,,
+Oro por segundo,5,,,,,,,,,,,,,
+Oro máximo,300,,,,,,,,,,,,,
+Poder de ataque global (%),100,multiplica el daño de todas las tropas (100 = normal),,,,,,,,,,,,
+Oro por punto de valor,25,coste = valor de tropa × este número (0 = todo gratis para testear),,,,,,,,,,,,
+CAMBIA EL COSTE A CERO DE TODAS LAS TROPAS PARA BALANCEAR SIN LIMITACIONES,,,,,,,,,,,,,,
+"BASE NO ES ENEMIGO, ES LAS ZONAS DE SPAWNEO DE ESTOS",,,,,,,,,,,,,,
+MODIFICA UNITY,,,,,,,,,,,,,,
+COMPARAR TROPAS,,,,,,,,,,,,,,
+NO TOCAR FILA A NI COLUMNA 5,,,,,,,,,,,,,,
+EL VALOR DE TROPA ES SEGÚN EL DPS DE BRAWLER (ENEMIGO BASE,,,,,,,,,,,,,,

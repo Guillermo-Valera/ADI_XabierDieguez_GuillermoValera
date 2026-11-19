@@ -212,14 +212,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6539cb8dab06e94494b48ae6c715830, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  price: 40
-  health: 10
-  damage: 3
-  attackRate: 4
+  price: 25
+  health: 9
+  damage: 8.75
+  attackRate: 3
   canAttackAtSeveralTargetsAtOnce: 0
   killSelfAfterAttack: 0
   targets: []
-  speed: 6
+  speed: 5
   enemyLayer:
     serializedVersion: 2
     m_Bits: 0
@@ -297,8 +297,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.68, y: 0}
-  m_Radius: 0.5
+  m_Offset: {x: 0.3, y: 0}
+  m_Radius: 0.3
 --- !u!50 &412246008123556385
 Rigidbody2D:
   serializedVersion: 5

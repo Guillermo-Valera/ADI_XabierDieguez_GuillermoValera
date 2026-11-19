@@ -8,6 +8,6 @@ public class Ranged : Unit
     public override void Attack(Unit target)
     {
         Arrow arrow = Instantiate(arrowPrefab, firePoint.position, Quaternion.identity);
-        arrow.Launch(target.gameObject, damage);
+        arrow.Launch(target.gameObject, damage, StatKey);
     }
 }

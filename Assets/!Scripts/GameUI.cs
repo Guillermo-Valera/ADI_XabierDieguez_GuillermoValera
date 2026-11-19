@@ -40,6 +40,10 @@ public class GameUI : MonoBehaviour
         if (spawner == null)
             spawner = FindFirstObjectByType<UnitSpawner>();
 
+        Canvas canvas = leftMoneyText != null ? leftMoneyText.canvas.rootCanvas : GetComponentInParent<Canvas>();
+        if (canvas != null && spawner != null)
+            canvas.gameObject.AddComponent<UnitStatsPanel>().Init(spawner);
+
         foreach (var u in FindObjectsByType<Unit>(FindObjectsSortMode.None))
         {
             if (!u.IsBase) continue;
